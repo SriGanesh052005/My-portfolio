@@ -1,0 +1,131 @@
+{
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Sriganesh K C",
+    "description": "Bridging the gap between hardware and software to design innovative, impactful technologies.",
+    "resumeUrl": "https://drive.google.com/file/d/1g0a5dDcX3CiJ5q4AqUoM9f93jkB6ctAm/view?usp=drive_link"
+  },
+  "about": {
+    "paragraphs": [
+      "Highly motivated Electrical and Electronics Engineering undergraduate with a strong foundation in hardware design, embedded systems, and software development.",
+      "Proficient in C/C++ and Verilog HDL, showcasing project expertise that ranges from engineering advanced IoT power monitoring devices to building intelligent AI-driven software.",
+      "Passionate about creating elegant solutions that combine low-level hardware control with high-level software intelligence."
+    ],
+    "location": "Chennai, Tamil Nadu",
+    "email": "kcsriganesh@gmail.com",
+    "phone": "+91 8939725690",
+    "profileImg": "20260328_152906.jpg"
+  },
+  "experience": [
+    {
+      "date": "Jun 2025 - Jul 2025",
+      "title": "Internship - Renault Nissan Automotive",
+      "description": "Completed an immersive industrial internship gaining hands-on exposure to advanced manufacturing machinery, automated assembly lines, and industrial operations. Strictly adhered to multinational safety protocols and standards while analyzing supply chain logistics and operational efficiency.",
+      "certLink": "https://www.linkedin.com/in/sriganesh-chandrasekaran-10b999335/details/certifications/"
+    },
+    {
+      "date": "Dec 2025 - Jan 2026",
+      "title": "Internship - Fuji Electric India",
+      "description": "Acquired practical, in-depth knowledge of industrial power electronics, focusing on the diagnosis, operation, and load-testing of industrial-grade inverters and stabilizers. Configured systems based on specific client technical requirements and utilized SAP software modules to track technical processes processes, support industrial workflows, and manage inventory.",
+      "certLink": "https://www.linkedin.com/in/sriganesh-chandrasekaran-10b999335/details/certifications/"
+    }
+  ],
+  "projects": [
+    {
+      "id": "ai-email",
+      "icon": "mail-unread",
+      "title": "AI Email Assistant & Webpage Summarizer",
+      "description": "Developed an intelligent AI-powered browser extension that integrates seamlessly with Gmail and webpages to perform text summarization and smart categorization. Leverages natural language processing (NLP) models on a fast Vercel backend.",
+      "tech": [
+        "AI/NLP",
+        "Vercel",
+        "Browser Extension"
+      ],
+      "githubLink": "#",
+      "demoLink": "#",
+      "isFeature": true
+    },
+    {
+      "id": "power-monitor",
+      "icon": "flash",
+      "title": "3-Phase Power Monitoring System",
+      "description": "Engineered an advanced 3-phase power monitoring hardware device utilizing an ESP32/NodeMCU and arrays of precision sensors to track the R, Y, and B phases simultaneously. Transmits high-frequency telemetry data over Wi-Fi to a custom Python backend.",
+      "tech": [
+        "ESP32",
+        "Python",
+        "IoT",
+        "Hardware Design"
+      ],
+      "githubLink": "#",
+      "demoLink": "",
+      "isFeature": true
+    },
+    {
+      "id": "biogas",
+      "icon": "leaf",
+      "title": "Biogas Plant Commercialisation",
+      "description": "Designed strategic protocols and an operational framework to commercialize an existing biogas plant. Focused on maximizing yield, optimizing raw materials input, and establishing a sustainable loop to promote effective organic waste reduction at scale.",
+      "tech": [
+        "Operations",
+        "Sustainability"
+      ],
+      "githubLink": "",
+      "demoLink": "",
+      "isFeature": false
+    },
+    {
+      "id": "arduino",
+      "icon": "speedometer",
+      "title": "Arduino Voltage & Current Measurer",
+      "description": "Built a compact, embedded hardware solution to accurately track the electrical current and voltage transferred through various appliances in real-time, utilizing Arduino microcontrollers and integrated circuitry components.",
+      "tech": [
+        "Arduino",
+        "C++",
+        "Circuits"
+      ],
+      "githubLink": "",
+      "demoLink": "",
+      "isFeature": false
+    }
+  ],
+  "skills": {
+    "languages": [
+      "C",
+      "C++",
+      "Python",
+      "Verilog HDL",
+      "JavaScript",
+      "HTML/CSS"
+    ],
+    "hardware": [
+      "Arduino",
+      "ESP32",
+      "PCB Design",
+      "Sensors",
+      "Power Electronics"
+    ],
+    "tools": [
+      "VS Code",
+      "EDA Playground",
+      "Git"
+    ]
+  },
+  "education": [
+    {
+      "title": "B.E. in Electrical & Electronics Engineering",
+      "school": "Prince Shri Venkateswara Padmavathy Engineering College",
+      "date": "2023 - Present | CGPA: 7.8"
+    },
+    {
+      "title": "Primary & Higher Secondary Education",
+      "school": "Ellen Sharma Memorial Matriculation Higher Secondary School, Sholinganallur, Chennai",
+      "date": "Graduated 2023"
+    }
+  ],
+  "achievements": [
+    "Design Head | Rotaract Club of PSVPEC (2025-26)",
+    "Student Coordinator | Prince ISOLVE Hack'26",
+    "PCB Workshop @ Vellore Institute of Technology, Chennai",
+    "LEAP Bootcamp @ PSVPEC, Ponmar"
+  ]
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | SKC</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-radius: 8px;
+            font-family: inherit;
+        }
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .array-item {
+            border-left: 2px solid var(--accent);
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        #save-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transform: translateY(-150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .toast.show {
+            transform: translateY(0);
+        }
+        .list-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg top-right"></div>
+    
+    <div id="toast" class="toast">Data saved successfully!</div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="admin-container">
+        <div class="section-card" style="max-width: 450px; margin: 6rem auto;">
+            <h2 style="margin-bottom: 0.5rem; text-align: center;">Admin Login</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; text-align: center;">Please enter your credentials to manage the portfolio.</p>
+            
+            <div id="login-error" style="color: #ff5555; background: rgba(255, 85, 85, 0.1); border: 1px solid rgba(255, 85, 85, 0.2); padding: 0.75rem; border-radius: 8px; margin-bottom: 1.5rem; display: none; font-size: 0.9rem; text-align: center;">
+                Invalid username or password
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem;">
+                    <ion-icon name="log-in-outline" style="font-size: 1.2rem; margin-right: 0.5rem; vertical-align: middle;"></ion-icon> Log In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (hidden initially) -->
+    <div id="admin-dashboard" style="display: none;">
+        <div class="admin-container">
+            <div class="admin-header">
+                <h2>Admin Dashboard</h2>
+                <div style="display: flex; gap: 10px;">
+                    <a href="/" class="btn btn-secondary">View Site</a>
+                    <button class="btn btn-secondary" onclick="handleLogout()" style="background: rgba(255, 255, 255, 0.05);">Log Out</button>
+                </div>
+            </div>
+
+            <button id="save-btn" class="btn btn-primary" onclick="saveData()">
+                <ion-icon name="save-outline"></ion-icon> Save Changes
+            </button>
+
+            <form id="admin-form">
+                
+                <div class="section-card">
+                    <h3>Hero Section</h3>
+                    <div class="form-group">
+                        <label>Greeting</label>
+                        <input type="text" id="hero-greeting" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="hero-name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="hero-desc" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Resume URL / File Path</label>
+                        <input type="text" id="hero-resume" class="form-control">
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3>About Section</h3>
+                    <div class="form-group">
+                        <label>Paragraph 1</label>
+                        <textarea id="about-p0" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Paragraph 2</label>
+                        <textarea id="about-p1" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Paragraph 3</label>
+                        <textarea id="about-p2" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="about-location" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" id="about-email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="about-phone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Profile Image URL / Path</label>
+                        <input type="text" id="about-profile-img" class="form-control">
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3>Experience</h3>
+                    <div id="experience-container"></div>
+                </div>
+
+                <div class="section-card">
+                    <h3>Projects</h3>
+                    <div id="projects-container"></div>
+                    <button type="button" class="btn btn-secondary mt-4" onclick="addProject()">
+                        <ion-icon name="add-outline"></ion-icon> Add New Project
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
