@@ -1,120 +1,145 @@
 document.addEventListener('DOMContentLoaded', async () => {
 
     /* --- Dynamic Data Fetching --- */
-    try {
-        const response = await fetch('/api/portfolio-data');
-        if (response.ok) {
-            const data = await response.json();
-            
-            // Inject Hero
-            if(document.querySelector('.greeting')) document.querySelector('.greeting').textContent = data.hero.greeting;
-            if(document.querySelector('.glitch-text')) {
-                document.querySelector('.glitch-text').textContent = data.hero.name;
-                document.querySelector('.glitch-text').setAttribute('data-text', data.hero.name);
-            }
-            if(document.querySelector('.hero-desc')) document.querySelector('.hero-desc').textContent = data.hero.description;
-            if(document.getElementById('resume-btn') && data.hero.resumeUrl) {
-                document.getElementById('resume-btn').setAttribute('href', data.hero.resumeUrl);
-            }
-
-            // Inject About
-            const aboutText = document.querySelector('.about-text');
-            if (aboutText) {
-                const paragraphs = aboutText.querySelectorAll('p');
-                if(paragraphs[0] && data.about.paragraphs[0]) paragraphs[0].textContent = data.about.paragraphs[0];
-                if(paragraphs[1] && data.about.paragraphs[1]) paragraphs[1].textContent = data.about.paragraphs[1];
-                if(paragraphs[2] && data.about.paragraphs[2]) paragraphs[2].textContent = data.about.paragraphs[2];
-                
-                const infoSpans = aboutText.querySelectorAll('.info-item span');
-                if(infoSpans[0]) infoSpans[0].textContent = data.about.location;
-                if(infoSpans[1]) infoSpans[1].textContent = data.about.email;
-                if(infoSpans[2]) infoSpans[2].textContent = data.about.phone;
-            }
-
-            // Inject Profile Image
-            const aboutAvatar = document.getElementById('about-avatar');
-            const aboutAvatarPlaceholder = document.getElementById('about-avatar-placeholder');
-            if (data.about && data.about.profileImg && data.about.profileImg !== '') {
-                if (aboutAvatar) {
-                    aboutAvatar.src = data.about.profileImg;
-                    aboutAvatar.style.display = 'block';
-                }
-                if (aboutAvatarPlaceholder) {
-                    aboutAvatarPlaceholder.style.display = 'none';
-                }
+    async function loadPortfolioData() {
+        let data = null;
+        try {
+            const response = await fetch('/api/portfolio-data');
+            if (response.ok) {
+                data = await response.json();
             } else {
-                if (aboutAvatar) aboutAvatar.style.display = 'none';
-                if (aboutAvatarPlaceholder) aboutAvatarPlaceholder.style.display = 'flex';
+                throw new Error('API server returned status: ' + response.status);
             }
-
-            // Inject Experience (Timeline)
-            const timeline = document.querySelector('.timeline');
-            if (timeline) {
-                const timelineItems = timeline.querySelectorAll('.timeline-item');
-                data.experience.forEach((exp, index) => {
-                    if (timelineItems[index]) {
-                        const dateEl = timelineItems[index].querySelector('.timeline-date');
-                        const titleEl = timelineItems[index].querySelector('h3');
-                        const descEl = timelineItems[index].querySelector('p');
-                        
-                        if(dateEl) dateEl.textContent = exp.date;
-                        if(titleEl) titleEl.textContent = exp.title;
-                        if(descEl) descEl.textContent = exp.description;
-                    }
-                });
-            }
-
-            // Inject Projects (Hero Cards)
-            const projectsGrid = document.querySelector('.projects-grid');
-            if (projectsGrid) {
-                projectsGrid.innerHTML = ''; // Clear existing projects
-                data.projects.forEach((proj, index) => {
-                    const isFeature = proj.isFeature ? 'feature-card' : '';
-                    
-                    let techHTML = '';
-                    if (proj.tech && proj.tech.length > 0) {
-                        techHTML = '<ul class="project-tech">';
-                        proj.tech.forEach(t => {
-                            techHTML += `<li>${t}</li>`;
-                        });
-                        techHTML += '</ul>';
-                    }
-
-                    const projectCard = document.createElement('div');
-                    projectCard.className = `project-card glass-card ${isFeature}`;
-                    projectCard.setAttribute('data-project-id', proj.id || `proj-${index}`);
-                    
-                    // Construct links
-                    let linksHTML = '';
-                    if ((proj.githubLink && proj.githubLink !== '') || (proj.demoLink && proj.demoLink !== '')) {
-                        linksHTML = '<div class="project-links">';
-                        if (proj.githubLink && proj.githubLink !== '') {
-                            linksHTML += `<a href="${proj.githubLink}" class="icon-link"><ion-icon name="logo-github"></ion-icon></a>`;
-                        }
-                        if (proj.demoLink && proj.demoLink !== '') {
-                            linksHTML += `<a href="${proj.demoLink}" class="icon-link"><ion-icon name="open"></ion-icon></a>`;
-                        }
-                        linksHTML += '</div>';
-                    }
-
-                    projectCard.innerHTML = `
-                        <div class="project-content">
-                            <div class="project-header">
-                                <ion-icon name="${proj.icon || 'folder-outline'}" class="project-icon"></ion-icon>
-                                ${linksHTML}
-                            </div>
-                            <h3 class="project-title">${proj.title}</h3>
-                            <p class="project-desc">${proj.description}</p>
-                            ${techHTML}
-                        </div>
-                    `;
-                    projectsGrid.appendChild(projectCard);
-                });
+        } catch (e) {
+            console.warn("Could not fetch from backend API, trying static fallback...", e);
+            try {
+                const fallbackResponse = await fetch('./data.json');
+                if (fallbackResponse.ok) {
+                    data = await fallbackResponse.json();
+                } else {
+                    throw new Error('Static fallback data.json not found');
+                }
+            } catch (fallbackError) {
+                console.error("Failed to load both backend API and static fallback data", fallbackError);
             }
         }
-    } catch (e) {
-        console.error("Could not fetch dynamic data", e);
+
+        if (data) {
+            renderData(data);
+        }
     }
+
+    function renderData(data) {
+        // Inject Hero
+        if(document.querySelector('.greeting')) document.querySelector('.greeting').textContent = data.hero.greeting;
+        if(document.querySelector('.glitch-text')) {
+            document.querySelector('.glitch-text').textContent = data.hero.name;
+            document.querySelector('.glitch-text').setAttribute('data-text', data.hero.name);
+        }
+        if(document.querySelector('.hero-desc')) document.querySelector('.hero-desc').textContent = data.hero.description;
+        if(document.getElementById('resume-btn') && data.hero.resumeUrl) {
+            document.getElementById('resume-btn').setAttribute('href', data.hero.resumeUrl);
+        }
+
+        // Inject About
+        const aboutText = document.querySelector('.about-text');
+        if (aboutText) {
+            const paragraphs = aboutText.querySelectorAll('p');
+            if(paragraphs[0] && data.about.paragraphs[0]) paragraphs[0].textContent = data.about.paragraphs[0];
+            if(paragraphs[1] && data.about.paragraphs[1]) paragraphs[1].textContent = data.about.paragraphs[1];
+            if(paragraphs[2] && data.about.paragraphs[2]) paragraphs[2].textContent = data.about.paragraphs[2];
+            
+            const infoSpans = aboutText.querySelectorAll('.info-item span');
+            if(infoSpans[0]) infoSpans[0].textContent = data.about.location;
+            if(infoSpans[1]) infoSpans[1].textContent = data.about.email;
+            if(infoSpans[2]) infoSpans[2].textContent = data.about.phone;
+        }
+
+        // Inject Profile Image
+        const aboutAvatar = document.getElementById('about-avatar');
+        const aboutAvatarPlaceholder = document.getElementById('about-avatar-placeholder');
+        if (data.about && data.about.profileImg && data.about.profileImg !== '') {
+            if (aboutAvatar) {
+                aboutAvatar.src = data.about.profileImg;
+                aboutAvatar.style.display = 'block';
+            }
+            if (aboutAvatarPlaceholder) {
+                aboutAvatarPlaceholder.style.display = 'none';
+            }
+        } else {
+            if (aboutAvatar) aboutAvatar.style.display = 'none';
+            if (aboutAvatarPlaceholder) aboutAvatarPlaceholder.style.display = 'flex';
+        }
+
+        // Inject Experience (Timeline)
+        const timeline = document.querySelector('.timeline');
+        if (timeline) {
+            const timelineItems = timeline.querySelectorAll('.timeline-item');
+            data.experience.forEach((exp, index) => {
+                if (timelineItems[index]) {
+                    const dateEl = timelineItems[index].querySelector('.timeline-date');
+                    const titleEl = timelineItems[index].querySelector('h3');
+                    const descEl = timelineItems[index].querySelector('p');
+                    
+                    if(dateEl) dateEl.textContent = exp.date;
+                    if(titleEl) titleEl.textContent = exp.title;
+                    if(descEl) descEl.textContent = exp.description;
+                }
+            });
+        }
+
+        // Inject Projects (Hero Cards)
+        const projectsGrid = document.querySelector('.projects-grid');
+        if (projectsGrid) {
+            projectsGrid.innerHTML = ''; // Clear existing projects
+            data.projects.forEach((proj, index) => {
+                const isFeature = proj.isFeature ? 'feature-card' : '';
+                
+                let techHTML = '';
+                if (proj.tech && proj.tech.length > 0) {
+                    techHTML = '<ul class="project-tech">';
+                    proj.tech.forEach(t => {
+                        techHTML += `<li>${t}</li>`;
+                    });
+                    techHTML += '</ul>';
+                }
+
+                const projectCard = document.createElement('div');
+                projectCard.className = `project-card glass-card ${isFeature}`;
+                projectCard.setAttribute('data-project-id', proj.id || `proj-${index}`);
+                
+                // Construct links
+                let linksHTML = '';
+                if ((proj.githubLink && proj.githubLink !== '') || (proj.demoLink && proj.demoLink !== '')) {
+                    linksHTML = '<div class="project-links">';
+                    if (proj.githubLink && proj.githubLink !== '') {
+                        linksHTML += `<a href="${proj.githubLink}" class="icon-link"><ion-icon name="logo-github"></ion-icon></a>`;
+                    }
+                    if (proj.demoLink && proj.demoLink !== '') {
+                        linksHTML += `<a href="${proj.demoLink}" class="icon-link"><ion-icon name="open"></ion-icon></a>`;
+                    }
+                    linksHTML += '</div>';
+                }
+
+                projectCard.innerHTML = `
+                    <div class="project-content">
+                        <div class="project-header">
+                            <ion-icon name="${proj.icon || 'folder-outline'}" class="project-icon"></ion-icon>
+                            ${linksHTML}
+                        </div>
+                        <h3 class="project-title">${proj.title}</h3>
+                        <p class="project-desc">${proj.description}</p>
+                        ${techHTML}
+                    </div>
+                `;
+                projectsGrid.appendChild(projectCard);
+            });
+        }
+    }
+
+    // Call load function
+    loadPortfolioData();
+
     /* --- Navbar Scroll Effect & Active Links --- */
     const navbar = document.querySelector('.navbar');
     const navLinks = document.querySelectorAll('.nav-link');
